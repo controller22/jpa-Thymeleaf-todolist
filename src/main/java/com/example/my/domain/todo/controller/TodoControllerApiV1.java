@@ -18,7 +18,8 @@ public class TodoControllerApiV1 {
     @GetMapping
     public ResponseEntity<?> getTodoTableData(HttpSession session) {
         // TODO : 서비스에서 할 일 목록 가져오기
-        return null;
+
+        return  todoServiceApiV1.getTodoTableData(null);
     }
 
     @PostMapping

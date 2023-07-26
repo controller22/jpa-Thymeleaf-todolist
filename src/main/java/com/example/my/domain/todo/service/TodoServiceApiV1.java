@@ -1,23 +1,21 @@
 package com.example.my.domain.todo.service;
 
-import com.example.my.common.dto.LoginUserDTO;
-import com.example.my.common.dto.ResponseDTO;
-import com.example.my.domain.todo.dto.ReqTodoTableInsertDTO;
-import com.example.my.domain.todo.dto.ReqTodoTableUpdateDoneYnDTO;
-import com.example.my.domain.todo.dto.ResTodoTableDTO;
-import com.example.my.model.todo.entity.TodoEntity;
-import com.example.my.model.todo.repository.TodoRepository;
-import com.example.my.model.user.entity.UserEntity;
-import com.example.my.model.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import com.example.my.common.dto.LoginUserDTO;
+import com.example.my.common.dto.ResponseDTO;
+import com.example.my.domain.todo.dto.ReqTodoTableInsertDTO;
+import com.example.my.domain.todo.dto.ReqTodoTableUpdateDoneYnDTO;
+import com.example.my.model.todo.entity.TodoEntity;
+import com.example.my.model.todo.repository.TodoRepository;
+import com.example.my.model.user.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +42,8 @@ public class TodoServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<?> updateTodoTableData(Long todoIdx, ReqTodoTableUpdateDoneYnDTO dto, LoginUserDTO loginUserDTO) {
+    public ResponseEntity<?> updateTodoTableData(Long todoIdx, ReqTodoTableUpdateDoneYnDTO dto,
+            LoginUserDTO loginUserDTO) {
         // TODO : 리파지토리에서 할 일 기본키로 삭제되지 않은 할 일 찾기
         // TODO : 할 일이 null이면 (존재하지 않는 할 일입니다.) 리턴
         // TODO : 할 일 작성자와 로그인 유저가 다르면 (권한이 없습니다. )리턴
