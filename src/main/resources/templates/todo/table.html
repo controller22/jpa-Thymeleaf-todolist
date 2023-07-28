@@ -1,152 +1,131 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8"/>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-  <script
+  <head>
+    <meta charset="UTF-8" />
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script
       type="text/javascript"
       src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"
-  ></script>
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-  <link
+    ></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link
       href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
       rel="stylesheet"
       id="bootstrap-css"
-  />
-  <link
-      rel="stylesheet"
-      href="/css/todo-table.css"
-  />
-  <title>todoList</title>
-</head>
-<body>
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="javascript:void(0)">
-        <span id="userId" th:text ="${session.dto.user.id}"></span>'s work
-      </a>
-    </div>
-    <button type="button" onclick="logout()" class="btn btn-default navbar-btn navbar-right">logout</button>
-  </div>
-</nav>
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <div class="todolist not-done">
-        <h1>TODO LIST</h1>
-        <input
-            id="content"
-            type="text"
-            class="form-control add-todo"
-            placeholder="할일을 입력하고 엔터를 치세요"
-            autofocus
-        />
-        <hr/>
+    />
+    <link rel="stylesheet" href="/css/todo-table.css" />
+    <title>todoList</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="javascript:void(0)">
+            <span id="userId" th:text="${session.dto.user.id}"></span>'s work
+          </a>
+        </div>
+        <button
+          type="button"
+          onclick="logout()"
+          class="btn btn-default navbar-btn navbar-right"
+        >
+          logout
+        </button>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="todolist not-done">
+            <h1>TODO LIST</h1>
+            <input
+              id="content"
+              type="text"
+              class="form-control add-todo"
+              placeholder="할일을 입력하고 엔터를 치세요"
+              autofocus
+            />
+            <hr />
 
+            <ul id="todoList" class="list-unstyled">
+              <li class="ui-state-default" th:each="dto:${dto.todoList}">
+                <div class="checkbox">
+                  <label>
+                    <input
+                      th:onchange="|setDoneY(${dto.idx})|"
+                      type="checkbox"
+                    />
+                    <span th:text="${dto.content}"></span>
+                  </label>
+                </div>
+              </li>
+            </ul>
 
-        <ul id="todoList" class="list-unstyled">
-          <li class="ui-state-default" >
-            <div class="checkbox">
-              <label>
-                <input
-                    onchange="setDoneY(0)"
-                    type="checkbox"
-                />
-                <span>밥먹기</span>
-              </label>
+            <div class="todo-footer">
+              <strong>
+                <span
+                  id="todoCount"
+                  class="count-todos"
+                  th:text="${dto.todoList.size()}"
+                ></span>
+              </strong>
+              항목 남았음
             </div>
-          </li>
-          <li class="ui-state-default" >
-            <div class="checkbox">
-              <label>
-                <input
-                    onchange="setDoneY(0)"
-                    type="checkbox"
-                />
-                <span>잠자기</span>
-              </label>
-            </div>
-          </li>
-        </ul>
-        <div class="todo-footer">
-          <strong>
-            <span id="todoCount" class="count-todos">2</span>
-          </strong>
-          항목 남았음
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="todolist">
+            <h1>DONE LIST</h1>
+            <ul
+              th:each="dto:${dto.doneList}"
+              id="doneList"
+              class="list-unstyled"
+            >
+              <li>
+                <div class="checkbox">
+                  <label>
+                    <input
+                      th:onchange="|setDoneN(${dto.idx})|"
+                      class="remove-item"
+                      type="checkbox"
+                    />
+                    <span th:text="${dto.content}"></span>
+                  </label>
+                  <button
+                    th:onclick="|setDelete(${dto.idx})|"
+                    class="remove-item btn btn-default btn-xs pull-right"
+                  >
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="todolist">
-
-        
-        <h1>DONE LIST</h1>
-        <ul id="doneList" class="list-unstyled">
-          <li>
-            <div class="checkbox">
-              <label>
-                <input
-                    onchange="setDoneN(0)"
-                    class="remove-item"
-                    type="checkbox"
-                />
-                <span>일어나기</span>
-              </label>
-              <button
-                  onclick="setDelete(0)"
-                  class="remove-item btn btn-default btn-xs pull-right"
-              >
-                <span class="glyphicon glyphicon-remove"></span>
-              </button>
-            </div>
-          </li>
-          <li>
-            <div class="checkbox">
-              <label>
-                <input
-                    onchange="setDoneN(0)"
-                    class="remove-item"
-                    type="checkbox"
-                />
-                <span>세수하기</span>
-              </label>
-              <button
-                  onclick="setDelete(0)"
-                  class="remove-item btn btn-default btn-xs pull-right"
-              >
-                <span class="glyphicon glyphicon-remove"></span>
-              </button>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-</body>
-<script>
+  </body>
+  <script>
     console.log("스타일 참고", "https://bootsnipp.com/snippets/QbN51");
 
     const logout = () => {
       location.replace("/auth/logout");
-    }
+    };
 
     const init = () => {
-        fetch(`/api/v1/todo`)
-            .then((response) => response.json())
-            .then((result) => {
-                if (result.code === 0) {
+      fetch(`/api/v1/todo`)
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.code === 0) {
+            const todoList = result.data.todoList;
+            const doneList = result.data.doneList;
 
-                    const todoList = result.data.todoList;
-                    const doneList = result.data.doneList;
+            document.querySelector("#todoList").innerHTML = "";
 
-                    document.querySelector("#todoList").innerHTML = "";
-
-                    for (const todo of todoList) {
-                        document.querySelector("#todoList").insertAdjacentHTML(
-                            "beforeend",
-                            `
+            for (const todo of todoList) {
+              document.querySelector("#todoList").insertAdjacentHTML(
+                "beforeend",
+                `
                             <li class="ui-state-default">
                                 <div class="checkbox">
                                     <label>
@@ -159,17 +138,17 @@
                                 </div>
                             </li>
                             `
-                        );
-                    }
+              );
+            }
 
-                    document.querySelector("#todoCount").innerText = todoList.length;
+            document.querySelector("#todoCount").innerText = todoList.length;
 
-                    document.querySelector("#doneList").innerHTML = "";
+            document.querySelector("#doneList").innerHTML = "";
 
-                    for (const todo of doneList) {
-                        document.querySelector("#doneList").insertAdjacentHTML(
-                            "beforeend",
-                            `
+            for (const todo of doneList) {
+              document.querySelector("#doneList").insertAdjacentHTML(
+                "beforeend",
+                `
                             <li>
                                 <div class="checkbox">
                                     <label>
@@ -189,42 +168,119 @@
                                 </div>
                             </li>
                             `
-                        );
-                    }
-                } else {
-                    console.log(result.message);
-                }
-            })
-            .catch((error) => {
-                alert(error.message);
-            });
+              );
+            }
+          } else {
+            console.log(result.message);
+          }
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
     };
 
+    // TODO: ReqTodoTableInsertDTO를 참고하여 필요한 데이터를 생성
+
+    // POST 요청을 보내는 함수
+    function sendPostRequest(data) {
+      fetch("/api/v1/todo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // 응답 코드가 0인 경우 새로고침
+          if (data.code === 0) {
+            window.location.reload(); // 현재 페이지 새로고침
+          } else {
+            // TODO: 기타 응답 코드에 따른 처리
+          }
+        })
+        .catch((error) => {
+          // TODO: 에러 처리
+          console.error("Error:", error);
+        });
+    }
+
     const contentInput = document.querySelector("#content");
-    contentInput.addEventListener("keyup", (e) => {
-        if (e.code !== "Enter") return;
-        if (contentInput.value === "") return;
+    contentInput.addEventListener("keypress", (e) => {
+      console.log(e.code);
+      if (e.code !== "Enter") return;
+      if (contentInput.value === "") return;
 
-        // TODO: 할 일 저장
+      const reqTodoData = {
+        todo: {
+          content: contentInput.value,
+        },
+      };
 
+      // sendPostRequest 함수를 호출하여 POST 요청 보내기
+      sendPostRequest(reqTodoData);
     });
 
-
     const setDoneY = (idx) => {
-
-        // TODO: 할 일 완료
+      // TODO: 할 일 완료
+      const updateData = {
+        todo: {
+          doneYn: "Y",
+        },
+      };
+      fetch(`/api/v1/todo/` + idx, {
+        method: "PUT", // 업데이트에는 PUT 또는 PATCH 메서드를 사용
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // 업데이트 후의 처리 (예시: 응답 데이터를 콘솔에 출력)
+          if (data.code === 0) {
+            window.location.reload(); // 현재 페이지 새로고침
+          } else {
+            // TODO: 기타 응답 코드에 따른 처리
+          }
+        })
+        .catch((error) => {
+          // 오류 처리
+          console.error("Error:", error);
+        });
     };
 
     const setDoneN = (idx) => {
-
-        // TODO: 할 일 미완료
-
+      // TODO: 할 일 완료
+      const updateData = {
+        todo: {
+          doneYn: "N",
+        },
+      };
+      fetch(`/api/v1/todo/` + idx, {
+        method: "PUT", // 업데이트에는 PUT 또는 PATCH 메서드를 사용
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // 업데이트 후의 처리 (예시: 응답 데이터를 콘솔에 출력)
+          if (data.code === 0) {
+            window.location.reload(); // 현재 페이지 새로고침
+          } else {
+            // TODO: 기타 응답 코드에 따른 처리
+          }
+        })
+        .catch((error) => {
+          // 오류 처리
+          console.error("Error:", error);
+        });
     };
 
     const setDelete = (idx) => {
-
-        // TODO: 할 일 삭제
-
+      // TODO: 할 일 삭제
     };
-</script>
+  </script>
 </html>
