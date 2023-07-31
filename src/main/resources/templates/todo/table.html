@@ -281,6 +281,21 @@
 
     const setDelete = (idx) => {
       // TODO: 할 일 삭제
+      fetch(`/api/v1/todo/` + idx, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.ok) {
+            alert("삭제 성공");
+            location.reload();
+            // 삭제 성공 후 추가적으로 수행할 동작이 있을 경우 여기에 작성
+          } else {
+            alert("삭제 실패");
+          }
+        })
+        .catch((error) => {
+          console.error("Error", error);
+        });
     };
   </script>
 </html>

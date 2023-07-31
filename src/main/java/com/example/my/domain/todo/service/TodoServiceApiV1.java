@@ -91,11 +91,23 @@ public class TodoServiceApiV1 {
     @Transactional
     public ResponseEntity<?> deleteTodoTableData(Long todoIdx, LoginUserDTO loginUserDTO) {
         // TODO : 리파지토리에서 할 일 기본키로 삭제되지 않은 할 일 찾기
+        Optional<TodoEntity> todoEntity = todoRepository.findByIdxAndDeleteDateIsNull(todoIdx);
         // TODO : 할 일이 null이면 (존재하지 않는 할 일입니다.) 리턴
+         if (todoRepository.findByIdx(todoIdx)==null) {
+        throw new BadRequestException("존재하지 않는 할 일입니다.");
+        } 
         // TODO : 할 일 작성자와 로그인 유저가 다르면 (권한이 없습니다.) 리턴
+        if (!todoEntity.get().getUserEntity().getIdx().equals(loginUserDTO.getUser().getIdx())) {
+        throw new BadRequestException("작성자가 아닙니다");
+        } 
         // TODO : 할 일 deleteDate 업데이트
+        todoRepository.delete(todoEntity.get());
         // TODO : 응답 데이터로 리턴하기 (할 일 삭제에 성공하였습니다.)
-        return null;
+       return new ResponseEntity<>(ResponseDTO.builder()
+                                                .code(0)
+                                                .message("할 일 삭제에 성공하였습니다.")
+                                                .build(),
+                                HttpStatus.OK);
     }
 
 }

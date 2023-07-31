@@ -49,7 +49,7 @@ public class TodoControllerApiV1 {
             @RequestBody ReqTodoTableUpdateDoneYnDTO dto,
             HttpSession session) {
         // TODO : 서비스에서 할 일 완료 수정하기
-         LoginUserDTO loginUserDTO = (LoginUserDTO) session.getAttribute("dto");
+        LoginUserDTO loginUserDTO = (LoginUserDTO) session.getAttribute("dto");
 
         todoServiceApiV1.updateTodoTableData(todoIdx, dto, loginUserDTO);
 
@@ -65,7 +65,14 @@ public class TodoControllerApiV1 {
             @PathVariable Long todoIdx,
             HttpSession session) {
         // TODO : 서비스에서 할 일 삭제하기
-        return null;
+        LoginUserDTO loginUserDTO = (LoginUserDTO) session.getAttribute("dto");
+        todoServiceApiV1.deleteTodoTableData(todoIdx, loginUserDTO);
+
+        return new ResponseEntity<>(ResponseDTO.builder()
+                .message("할 일 삭제 성공")
+                .code(0)
+                .build(),
+                HttpStatus.OK);
     }
 
 }
